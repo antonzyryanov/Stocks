@@ -58,6 +58,9 @@
 		FC2433A52E2DD93F0078CD01 /* CustomLabelModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2433A42E2DD93F0078CD01 /* CustomLabelModel.swift */; };
 		FC2433AA2E2DE21A0078CD01 /* UIImageView + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2433A92E2DE21A0078CD01 /* UIImageView + Extensions.swift */; };
 		FC2433AC2E2DE3830078CD01 /* CollectionViewInsideScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2433AB2E2DE3830078CD01 /* CollectionViewInsideScrollView.swift */; };
+		FC2433AE2E2E16D30078CD01 /* CloudsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2433AD2E2E16D30078CD01 /* CloudsView.swift */; };
+		FC2433B02E2E1F3C0078CD01 /* PromptsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2433AF2E2E1F3C0078CD01 /* PromptsModel.swift */; };
+		FC2433B22E2E223A0078CD01 /* CloudsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2433B12E2E223A0078CD01 /* CloudsModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +135,9 @@
 		FC2433A42E2DD93F0078CD01 /* CustomLabelModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabelModel.swift; sourceTree = "<group>"; };
 		FC2433A92E2DE21A0078CD01 /* UIImageView + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView + Extensions.swift"; sourceTree = "<group>"; };
 		FC2433AB2E2DE3830078CD01 /* CollectionViewInsideScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewInsideScrollView.swift; sourceTree = "<group>"; };
+		FC2433AD2E2E16D30078CD01 /* CloudsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudsView.swift; sourceTree = "<group>"; };
+		FC2433AF2E2E1F3C0078CD01 /* PromptsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptsModel.swift; sourceTree = "<group>"; };
+		FC2433B12E2E223A0078CD01 /* CloudsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudsModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -296,6 +302,7 @@
 				FC24339A2E2DCEC90078CD01 /* TextFieldWithCustomCancelButton.swift */,
 				FC2433A02E2DD5FB0078CD01 /* StocksCell.swift */,
 				FC2433AB2E2DE3830078CD01 /* CollectionViewInsideScrollView.swift */,
+				FC2433AD2E2E16D30078CD01 /* CloudsView.swift */,
 			);
 			path = "Reusable UI Components";
 			sourceTree = "<group>";
@@ -308,6 +315,8 @@
 				FC2433832E2DABA30078CD01 /* SearchTextFieldModel.swift */,
 				FC2433A22E2DD9060078CD01 /* StocksCellModel.swift */,
 				FC2433A42E2DD93F0078CD01 /* CustomLabelModel.swift */,
+				FC2433AF2E2E1F3C0078CD01 /* PromptsModel.swift */,
+				FC2433B12E2E223A0078CD01 /* CloudsModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -545,6 +554,7 @@
 				FC2433312E2D89A30078CD01 /* AppDelegate.swift in Sources */,
 				FC24335E2E2D8B270078CD01 /* MainRouter.swift in Sources */,
 				FC2433322E2D89A30078CD01 /* SceneDelegate.swift in Sources */,
+				FC2433B02E2E1F3C0078CD01 /* PromptsModel.swift in Sources */,
 				FC2433612E2D8BA80078CD01 /* UIApplication + Extensions.swift in Sources */,
 				FC2433992E2DC5040078CD01 /* LocalStocksDataRepositoryImpl.swift in Sources */,
 				FC2433332E2D89A30078CD01 /* Stocks.xcdatamodeld in Sources */,
@@ -555,6 +565,7 @@
 				FC2433822E2DAAD90078CD01 /* UIColor + Extensions.swift in Sources */,
 				FC24339D2E2DD27D0078CD01 /* UIViewController + Extensions.swift in Sources */,
 				FC24339B2E2DCEC90078CD01 /* TextFieldWithCustomCancelButton.swift in Sources */,
+				FC2433AE2E2E16D30078CD01 /* CloudsView.swift in Sources */,
 				FC2433482E2D89E70078CD01 /* StocksRouter.swift in Sources */,
 				FC2433912E2DC0D90078CD01 /* StocksDataRepositoryImpl.swift in Sources */,
 				FC2433AC2E2DE3830078CD01 /* CollectionViewInsideScrollView.swift in Sources */,
@@ -565,6 +576,7 @@
 				FC2433952E2DC1540078CD01 /* LocalStocksDataRepositoryProtocol.swift in Sources */,
 				FC24334B2E2D89E70078CD01 /* StocksInteractor.swift in Sources */,
 				FC2433342E2D89A30078CD01 /* ViewController.swift in Sources */,
+				FC2433B22E2E223A0078CD01 /* CloudsModel.swift in Sources */,
 				FC24338B2E2DBF910078CD01 /* StocksModelContainer.swift in Sources */,
 				FC2433862E2DB34B0078CD01 /* String + Extensions.swift in Sources */,
 				FC2433A52E2DD93F0078CD01 /* CustomLabelModel.swift in Sources */,

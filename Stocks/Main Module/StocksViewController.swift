@@ -17,10 +17,11 @@ class StocksViewController: UIViewController {
             updateStocksCollectionView()
         }
     }
+    
     private var presentationStocksModels: [StocksModel] = []
     private var currentlyPresentingStocksModels: [StocksModel] = []
     
-    let scrollView: UIScrollView = {
+    private let scrollView: UIScrollView = {
         let view = UIScrollView()
         view.backgroundColor = .white
         view.isUserInteractionEnabled = true
@@ -28,16 +29,16 @@ class StocksViewController: UIViewController {
         return view
     }()
         
-    let contentView: UIView = {
+    private let contentView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         view.isUserInteractionEnabled = true
         return view
     }()
     
-    let searchTextField = SearchTextField()
-    let categoriesView = CategoriesView()
-    var collectionsViewsStackView: UIStackView = {
+    private let searchTextField = SearchTextField()
+    private let categoriesView = CategoriesView()
+    private var searchStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.backgroundColor = .white
         stackView.isUserInteractionEnabled = true
@@ -45,7 +46,10 @@ class StocksViewController: UIViewController {
         return stackView
     }()
     
-    var stocksCollectionView: UICollectionView!
+    private let popularRequestsPromptsCloud = CloudsView(frame: CGRect(x: 0, y: 0, width: 300, height: 123))
+    private let searchHistoryPromptsCloud = CloudsView(frame: CGRect(x: 0, y: 0, width: 300, height: 123))
+    
+    private var stocksCollectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,12 +88,7 @@ class StocksViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(20)
             make.top.equalTo(searchTextField.snp.bottom).inset(-20)
         }
-        contentView.addSubview(collectionsViewsStackView)
-        collectionsViewsStackView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.top.equalTo(categoriesView.snp.bottom).inset(-20)
-            make.bottom.equalToSuperview().inset(20)
-        }
+        
         let customButtons: [CustomButtonModel] = [
             CustomButtonModel(title: "Stocks", font: .montserratBold28, action: {
                 self.isOnlyFavouritesShown = false
@@ -102,6 +101,47 @@ class StocksViewController: UIViewController {
         categoriesView.configure(with: categoriesModel)
         let searchTextFieldModel = SearchTextFieldModel(font: .montserratMedium16, textColor: .stocksBlack, image: UIImage(named: "search_icon"), placeHolder: "Find company or ticker")
         searchTextField.configureWith(model: searchTextFieldModel)
+        contentView.addSubview(searchStackView)
+        searchStackView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.top.equalTo(categoriesView.snp.bottom).inset(-20)
+        }
+        
+       
+        popularRequestsPromptsCloud.setTitle("Popular requests")
+        popularRequestsPromptsCloud.tapAction = { text in
+            print("[PopularRequestsPromptsCloud]: Tapped label \(text)")
+        }
+        popularRequestsPromptsCloud.configure(with:
+                .init(prompts: .init(items: ["Apple", "First Solar", "Amazon", "Alibaba", "Google", "Facebook", "Tesla", "Microsoft", "Mastercard"]), titleFont: .montserratBold18, itemsFont: .montserratBold12)
+        )
+        searchStackView.addArrangedSubview(popularRequestsPromptsCloud)
+        popularRequestsPromptsCloud.snp.makeConstraints { make in
+            make.height.equalTo(123)
+            make.width.equalToSuperview()
+        }
+        
+        let spacer = UIView(frame: .init(x: 0, y: 0, width: self.searchStackView.frame.width, height: 28))
+        spacer.snp.makeConstraints { make in
+            make.height.equalTo(28)
+        }
+        searchStackView.addArrangedSubview(spacer)
+        
+        searchHistoryPromptsCloud.setTitle("You’ve searched for this")
+        searchHistoryPromptsCloud.tapAction = { text in
+            print("[searchHistoryPromptsCloud]: Tapped label \(text)")
+        }
+        searchHistoryPromptsCloud.configure(with:
+                .init(prompts:
+                        .init(items: ["Apple", "First Solar", "Amazon", "Alibaba", "Google", "Facebook", "Tesla", "Microsoft", "Mastercard"])
+                      , titleFont: .montserratBold18, itemsFont: .montserratBold12)
+        )
+        searchStackView.addArrangedSubview(searchHistoryPromptsCloud)
+        searchHistoryPromptsCloud.snp.makeConstraints { make in
+            make.height.equalTo(123)
+            make.width.equalToSuperview()
+        }
+        
         setupStocksCollectionView()
     }
     
@@ -117,7 +157,7 @@ class StocksViewController: UIViewController {
         self.contentView.addSubview(stocksCollectionView)
         stocksCollectionView.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalTo(self.contentView).inset(16)
-            make.top.equalTo(categoriesView.snp.bottom).inset(-20)
+            make.top.equalTo(searchStackView.snp.bottom).inset(-20)
             make.height.equalTo(self.view.snp.height)
         }
         stocksCollectionView.showsVerticalScrollIndicator = false
@@ -167,7 +207,9 @@ extension StocksViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StocksCell.cellID, for: indexPath)
                 as! StocksCell
-        cell.configureWith(model: .init(data: currentlyPresentingStocksModels[indexPath.row], topLeftLabelModel: .init(font: .montserratBold18, textColor: .stocksBlack), bottomLeftLabelModel: .init(font: .montserratBold11, textColor: .stocksBlack), topRightLabelModel: .init(font: .montserratBold18, textColor: .stocksBlack), bottomRightLabelModel: .init(font: .montserratBold12, textColor: .stocksGreen), favoriteImageName: "favourite_icon", notFavoriteImageName: "not_favourite_icon", itemIndex: indexPath.row))
+        cell.configureWith(model:
+                .init(data: currentlyPresentingStocksModels[indexPath.row], topLeftLabelModel: .init(font: .montserratBold18, textColor: .stocksBlack), bottomLeftLabelModel: .init(font: .montserratBold11, textColor: .stocksBlack), topRightLabelModel: .init(font: .montserratBold18, textColor: .stocksBlack), bottomRightLabelModel: .init(font: .montserratBold12, textColor: .stocksGreen), favoriteImageName: "favourite_icon", notFavoriteImageName: "not_favourite_icon", itemIndex: indexPath.row)
+        )
         cell.favouriteTapAction = { index in
             if let i = index {
                 for (index,stock) in self.presentationStocksModels.enumerated() {
@@ -184,7 +226,6 @@ extension StocksViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("didSelectItemAt")
     }
     
 }
