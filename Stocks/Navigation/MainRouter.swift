@@ -37,7 +37,6 @@ class MainRouter: MainRouterProtocol, RouterProtocol {
         }
     }
     
-    
     func showStocksScreen() {
         guard
         let stocksScreenRouter = childRouters[0] as? StocksRouter,

@@ -16,6 +16,8 @@ class StocksCell: UICollectionViewCell {
     private var itemIndex: Int?
     
     override func prepareForReuse() {
+        self.companyImageView.image = nil
+        self.favoritesImageView.image = nil
         self.itemIndex = nil
     }
     
@@ -63,11 +65,6 @@ class StocksCell: UICollectionViewCell {
     private var favoriteImageName: String = ""
     private var notFavoriteImageName: String = ""
     
-//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        print("StocksCell HIT TEST")
-//        return nil
-//    }
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -89,7 +86,7 @@ class StocksCell: UICollectionViewCell {
             make.top.bottom.leading.equalToSuperview().inset(8)
             
         }
-        setupLabels()
+        addLabels()
         bgView.addSubview(favoritesImageView)
         favoritesImageView.snp.makeConstraints { make in
             make.leading.equalTo(leftTopLabel.snp.trailing).inset(-6)
@@ -100,7 +97,7 @@ class StocksCell: UICollectionViewCell {
         favoritesImageView.addGestureRecognizer(tapGesture)
     }
     
-    private func setupLabels() {
+    private func addLabels() {
         bgView.addSubview(leftTopLabel)
         bgView.addSubview(leftBottomLabel)
         bgView.addSubview(rightTopLabel)
@@ -124,6 +121,18 @@ class StocksCell: UICollectionViewCell {
     }
     
     func configureWith(model: StocksCellModel) {
+        setupLabels(model)
+        setupImages(model)
+        self.itemIndex = model.itemIndex
+        
+        if model.itemIndex % 2 == 0 {
+            self.bgView.backgroundColor = .stocksBGGray
+        } else {
+            self.bgView.backgroundColor = .white
+        }
+    }
+    
+    private func setupLabels(_ model: StocksCellModel) {
         self.leftTopLabel.font = model.topLeftLabelModel.font
         self.leftTopLabel.textColor = model.topLeftLabelModel.textColor
         self.leftBottomLabel.font = model.bottomLeftLabelModel.font
@@ -138,15 +147,11 @@ class StocksCell: UICollectionViewCell {
         self.rightTopLabel.text = model.data.presentationPrice
         self.rightBottomLabel.text = model.data.presentationPriceDynamic
         self.rightBottomLabel.textColor = model.data.presentationPriceDynamic?.first == "+" ? .stocksGreen : .stocksRed
+    }
+    
+    private func setupImages(_ model: StocksCellModel) {
         self.favoritesImageView.image = (model.data.isFavourite ?? false) ? UIImage(named: model.favoriteImageName) : UIImage(named: model.notFavoriteImageName)
         self.companyImageView.downloaded(from: model.data.logo)
-        self.itemIndex = model.itemIndex
-        
-        if model.itemIndex % 2 == 0 {
-            self.bgView.backgroundColor = .stocksBGGray
-        } else {
-            self.bgView.backgroundColor = .white
-        }
     }
     
     @objc private func handleFavouriteTap() {

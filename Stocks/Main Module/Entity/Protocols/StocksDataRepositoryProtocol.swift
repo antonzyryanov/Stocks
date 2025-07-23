@@ -9,6 +9,8 @@ import Foundation
 
 protocol StocksDataRepositoryProtocol {
     func fetchStocks(completion: @escaping ([StocksModel])->Void)
+    func fetchPrompts(completion: @escaping (PromptsModel,PromptsModel) -> Void)
     func save(stocks: [StocksModel])
+    func saveHistory(prompts: PromptsModel)
     func updateFavouriteStatusOf(stock: StocksModel)
 }

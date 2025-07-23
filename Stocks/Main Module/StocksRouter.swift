@@ -19,7 +19,6 @@ class StocksRouter: PresenterToRouterStocksProtocol, RouterProtocol {
     
     let presenter: ViewToPresenterStocksProtocol & InteractorToPresenterStocksProtocol = StocksPresenter()
     
-    // MARK: Static methods
     func createModule(dataRepository:StocksDataRepositoryProtocol) -> UIViewController {
         let viewController = StocksViewController()
         viewController.presenter = self.presenter

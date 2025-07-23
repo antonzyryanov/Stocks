@@ -17,8 +17,11 @@ class StocksPresenter: ViewToPresenterStocksProtocol {
     func handleUpdateOfStock(presentationModel: StocksModel) {
         interactor?.handleUpdateOfStock(presentationModel: presentationModel)
     }
+    
+    func handleUpdateOfHistory(prompts: PromptsModel) {
+        interactor?.handleUpdateOfHistory(prompts: prompts)
+    }
 
-    // MARK: Properties
     var view: PresenterToViewStocksProtocol?
     var interactor: PresenterToInteractorStocksProtocol?
     var router: PresenterToRouterStocksProtocol?
@@ -26,21 +29,28 @@ class StocksPresenter: ViewToPresenterStocksProtocol {
 
 extension StocksPresenter: InteractorToPresenterStocksProtocol {
     
-    func handleUpdateOf(stocks: [StocksModel]) {
-        let stocksWithoutNils = stocks.map { model in
+    func handleUpdateOf(presentationModel: StocksModulePresentationModel) {
+        let formattedStocks = presentationModel.stocks.map { model in
             var presentaionPrice = ""
             var presentationPriceDynamic = ""
-            let change = model.change
-            if change > 0 {
-                presentationPriceDynamic = "+$" + "\(change)" + " (\(abs(model.changePercent))%)"
-            } else {
-                presentationPriceDynamic = "-$" + "\(abs(change))" + " (\(abs(model.changePercent))%)"
-            }
-            let editedPrice = removeDigitsAfterCommaIfNeededFrom(price: model.price)
-            presentaionPrice = "$" + editedPrice
+            formatData(model, &presentationPriceDynamic, &presentaionPrice)
             return StocksModel(symbol: model.symbol, name: model.name, price: model.price, change: model.change, changePercent: model.changePercent, logo: model.logo, isFavourite: model.isFavourite ?? false, presentationPrice: presentaionPrice, presentationPriceDynamic:presentationPriceDynamic)
         }
-        view?.handleUpdateOf(stocks: stocksWithoutNils)
+        
+        let editedModel = StocksModulePresentationModel(stocks: formattedStocks, popularPrompts: presentationModel.popularPrompts, historyPrompts: presentationModel.historyPrompts)
+        
+        view?.handleUpdateOf(presentationModel: editedModel)
+    }
+    
+    private func formatData(_ model: StocksModel, _ presentationPriceDynamic: inout String, _ presentaionPrice: inout String) {
+        let change = model.change
+        if change > 0 {
+            presentationPriceDynamic = "+$" + "\(change)" + " (\(abs(model.changePercent))%)"
+        } else {
+            presentationPriceDynamic = "-$" + "\(abs(change))" + " (\(abs(model.changePercent))%)"
+        }
+        let editedPrice = removeDigitsAfterCommaIfNeededFrom(price: model.price)
+        presentaionPrice = "$" + editedPrice
     }
     
     private func removeDigitsAfterCommaIfNeededFrom(price: Double) -> String {

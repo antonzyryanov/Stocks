@@ -20,5 +20,4 @@ class ModulesFactoryImpl: ModulesFactoryProtocol {
         return stocksRouter
     }
     
-    
 }

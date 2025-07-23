@@ -20,6 +20,8 @@ class StocksViewController: UIViewController {
     
     private var presentationStocksModels: [StocksModel] = []
     private var currentlyPresentingStocksModels: [StocksModel] = []
+    private var popularPrompts: PromptsModel = PromptsModel(items: [])
+    private var historyPrompts: PromptsModel = PromptsModel(items: [])
     
     private let scrollView: UIScrollView = {
         let view = UIScrollView()
@@ -37,7 +39,7 @@ class StocksViewController: UIViewController {
     }()
     
     private let searchTextField = SearchTextField()
-    private let categoriesView = CategoriesView()
+    private let categoriesView = CategoriesView(frame: CGRect(x: 0, y: 0, width: 300, height: 32))
     private var searchStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.backgroundColor = .white
@@ -48,20 +50,19 @@ class StocksViewController: UIViewController {
     
     private let popularRequestsPromptsCloud = CloudsView(frame: CGRect(x: 0, y: 0, width: 300, height: 123))
     private let searchHistoryPromptsCloud = CloudsView(frame: CGRect(x: 0, y: 0, width: 300, height: 123))
+    private let tableHeader = CustomTableHeader(frame: CGRect(x: 0, y: 0, width: 300, height: 24))
+    private let secondSpacer = UIView(frame: .init(x: 0, y: 0, width: 300, height: 28))
     
     private var stocksCollectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        hideKeyboardWhenTappedAround()
         requestUpdate()
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        view.addGestureRecognizer(tap)
-    }
-    
-    private func requestUpdate() {
-        presenter?.handleViewsRequestUpdate()
+        setupKeyboardTapGesture()
+        setupTextField()
+        hideSearchStackViewElements()
+        self.categoriesView.isHidden = false
     }
     
     private func setupUI() {
@@ -82,9 +83,11 @@ class StocksViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalToSuperview().inset(16)
         }
-        contentView.addSubview(categoriesView)
-        categoriesView.snp.makeConstraints { make in
-            make.height.equalTo(32)
+        
+        let searchTextFieldModel = SearchTextFieldModel(font: .montserratMedium16, textColor: .stocksBlack, image: UIImage(named: "search_icon"), placeHolder: "Find company or ticker")
+        searchTextField.configureWith(model: searchTextFieldModel)
+        contentView.addSubview(searchStackView)
+        searchStackView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
             make.top.equalTo(searchTextField.snp.bottom).inset(-20)
         }
@@ -99,13 +102,18 @@ class StocksViewController: UIViewController {
         ]
         let categoriesModel = CategoriesModel(buttons: customButtons, activeButtonColor: .stocksBlack, inactiveButtonsColor: .stocksGray)
         categoriesView.configure(with: categoriesModel)
-        let searchTextFieldModel = SearchTextFieldModel(font: .montserratMedium16, textColor: .stocksBlack, image: UIImage(named: "search_icon"), placeHolder: "Find company or ticker")
-        searchTextField.configureWith(model: searchTextFieldModel)
-        contentView.addSubview(searchStackView)
-        searchStackView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.top.equalTo(categoriesView.snp.bottom).inset(-20)
+        
+        searchStackView.addArrangedSubview(categoriesView)
+        categoriesView.snp.makeConstraints { make in
+            make.height.equalTo(32)
+            make.width.equalToSuperview()
         }
+        
+        let firstSpacer = UIView(frame: .init(x: 0, y: 0, width: self.searchStackView.frame.width, height: 20))
+        firstSpacer.snp.makeConstraints { make in
+            make.height.equalTo(20)
+        }
+        searchStackView.addArrangedSubview(firstSpacer)
         
        
         popularRequestsPromptsCloud.setTitle("Popular requests")
@@ -113,36 +121,59 @@ class StocksViewController: UIViewController {
             print("[PopularRequestsPromptsCloud]: Tapped label \(text)")
         }
         popularRequestsPromptsCloud.configure(with:
-                .init(prompts: .init(items: ["Apple", "First Solar", "Amazon", "Alibaba", "Google", "Facebook", "Tesla", "Microsoft", "Mastercard"]), titleFont: .montserratBold18, itemsFont: .montserratBold12)
+                .init(prompts: popularPrompts, titleFont: .montserratBold18, itemsFont: .montserratBold12)
         )
+        popularRequestsPromptsCloud.tapAction = { prompt in
+            if self.searchTextField.isEditing() {
+                self.searchTextField.set(text: prompt)
+            }
+        }
         searchStackView.addArrangedSubview(popularRequestsPromptsCloud)
         popularRequestsPromptsCloud.snp.makeConstraints { make in
             make.height.equalTo(123)
             make.width.equalToSuperview()
         }
         
-        let spacer = UIView(frame: .init(x: 0, y: 0, width: self.searchStackView.frame.width, height: 28))
-        spacer.snp.makeConstraints { make in
+        secondSpacer.snp.makeConstraints { make in
             make.height.equalTo(28)
         }
-        searchStackView.addArrangedSubview(spacer)
+        searchStackView.addArrangedSubview(secondSpacer)
         
         searchHistoryPromptsCloud.setTitle("You’ve searched for this")
         searchHistoryPromptsCloud.tapAction = { text in
-            print("[searchHistoryPromptsCloud]: Tapped label \(text)")
+            print("[SearchHistoryPromptsCloud]: Tapped label \(text)")
         }
         searchHistoryPromptsCloud.configure(with:
                 .init(prompts:
-                        .init(items: ["Apple", "First Solar", "Amazon", "Alibaba", "Google", "Facebook", "Tesla", "Microsoft", "Mastercard"])
-                      , titleFont: .montserratBold18, itemsFont: .montserratBold12)
+                        historyPrompts
+                      , titleFont: .montserratBold18, itemsFont: .montserratBold12, promptsReversed: true)
         )
         searchStackView.addArrangedSubview(searchHistoryPromptsCloud)
         searchHistoryPromptsCloud.snp.makeConstraints { make in
             make.height.equalTo(123)
             make.width.equalToSuperview()
         }
+        tableHeader.configureWith(model: .init(leftLabelText: "Stocks", rightLabelText: "Show more", leftLabelStyle: .init(font: .montserratBold18, textColor: .stocksBlack), rightLabelStyle: .init(font: .montserratBold12, textColor: .stocksBlack),rightLabelTapAction: {
+            self.searchTextField.finishSearch()
+        }))
+        searchStackView.addArrangedSubview(tableHeader)
+        tableHeader.snp.makeConstraints { make in
+            make.height.equalTo(24)
+            make.width.equalToSuperview()
+        }
         
         setupStocksCollectionView()
+        tableHeader.isHidden = true
+        secondSpacer.isHidden = true
+    }
+    
+    private func requestUpdate() {
+        presenter?.handleViewsRequestUpdate()
+    }
+    
+    private func setupKeyboardTapGesture() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(finishSearch))
+        view.addGestureRecognizer(tap)
     }
     
     private func setupStocksCollectionView() {
@@ -165,12 +196,23 @@ class StocksViewController: UIViewController {
         stocksCollectionView.isUserInteractionEnabled = true
     }
     
-    private func updateStocksCollectionView() {
-        if isOnlyFavouritesShown {
-            currentlyPresentingStocksModels = presentationStocksModels.filter({$0.isFavourite ?? false
+    private func updateStocksCollectionView(isFilterOn: Bool = false) {
+        if isFilterOn {
+            currentlyPresentingStocksModels = presentationStocksModels.filter({ stock in
+                let subString = stock.name.prefix(searchTextField.count())
+                if searchTextField.currentText().contains(subString) {
+                    return true
+                } else {
+                    return false
+                }
             })
         } else {
-            currentlyPresentingStocksModels = presentationStocksModels
+            if isOnlyFavouritesShown {
+                currentlyPresentingStocksModels = presentationStocksModels.filter({$0.isFavourite ?? false
+                })
+            } else {
+                currentlyPresentingStocksModels = presentationStocksModels
+            }
         }
         stocksCollectionView.snp.makeConstraints { make in
             make.height.equalTo(64*currentlyPresentingStocksModels.count)
@@ -181,13 +223,40 @@ class StocksViewController: UIViewController {
         }
     }
     
+    private func setupTextField() {
+        self.searchTextField.setup(delegate: self)
+        self.searchTextField.finishSearchAction = finishSearchOf(textField:)
+    }
+    
+    
+    private func hideSearchStackViewElements() {
+        categoriesView.isHidden = true
+        popularRequestsPromptsCloud.isHidden = true
+        searchHistoryPromptsCloud.isHidden = true
+        secondSpacer.isHidden = true
+    }
+    
+    private func showSearchStackViewElements() {
+        popularRequestsPromptsCloud.isHidden = false
+        searchHistoryPromptsCloud.isHidden = false
+        secondSpacer.isHidden = false
+    }
+    
+    @objc private func finishSearch() {
+        searchTextField.finishSearch()
+    }
+    
 }
 
 extension StocksViewController: PresenterToViewStocksProtocol{
     
-    func handleUpdateOf(stocks: [StocksModel]) {
-        presentationStocksModels = stocks
-        currentlyPresentingStocksModels = stocks
+    func handleUpdateOf(presentationModel: StocksModulePresentationModel) {
+        presentationStocksModels = presentationModel.stocks
+        currentlyPresentingStocksModels = presentationModel.stocks
+        popularPrompts = presentationModel.popularPrompts
+        historyPrompts = presentationModel.historyPrompts
+        popularRequestsPromptsCloud.configure(with:  .init(prompts: popularPrompts, titleFont: .montserratBold18, itemsFont: .montserratBold12))
+        searchHistoryPromptsCloud.configure(with:  .init(prompts: historyPrompts, titleFont: .montserratBold18, itemsFont: .montserratBold12, promptsReversed: true))
         stocksCollectionView.snp.makeConstraints { make in
             make.height.equalTo(64*currentlyPresentingStocksModels.count)
         }
@@ -229,3 +298,71 @@ extension StocksViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
 }
+
+extension StocksViewController: UITextFieldDelegate {
+    
+    private func finishSearchOf(textField: UITextField) {
+        if textField.text?.replacingOccurrences(of: " ", with: "") != "" {
+            self.historyPrompts = .init(items: self.historyPrompts.items + [textField.text ?? ""])
+            searchHistoryPromptsCloud.configure(with:
+                    .init(prompts:
+                            historyPrompts
+                          , titleFont: .montserratBold18, itemsFont: .montserratBold12, promptsReversed: true)
+            )
+            presenter?.handleUpdateOfHistory(prompts: self.historyPrompts)
+            textField.endEditing(true)
+        } else {
+            textField.endEditing(true)
+            updateStocksCollectionView()
+        }
+        self.tableHeader.isHidden = true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        finishSearchOf(textField: textField)
+        return true
+    }
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        let currentText = textField.text ?? ""
+        if currentText.count == 0 {
+            self.tableHeader.isHidden = true
+            UIView.animate(withDuration: 0.3) {
+                self.showSearchStackViewElements()
+            }
+            self.stocksCollectionView.isHidden = true
+        } else {
+            self.tableHeader.isHidden = false
+            updateStocksCollectionView(isFilterOn: true)
+            self.stocksCollectionView.isHidden = false
+        }
+        self.categoriesView.isHidden = true
+        return true
+    }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        UIView.animate(withDuration: 0.3) {
+            self.hideSearchStackViewElements()
+            self.stocksCollectionView.isHidden = false
+            self.categoriesView.isHidden = false
+        }
+        return true
+    }
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        let currentText = textField.text ?? ""
+        if currentText.count > 0 {
+            self.tableHeader.isHidden = false
+            self.hideSearchStackViewElements()
+            self.stocksCollectionView.isHidden = false
+            updateStocksCollectionView(isFilterOn: true)
+        } else {
+            self.tableHeader.isHidden = true
+            self.showSearchStackViewElements()
+            self.stocksCollectionView.isHidden = true
+            updateStocksCollectionView(isFilterOn: false)
+        }
+    }
+    
+}
+

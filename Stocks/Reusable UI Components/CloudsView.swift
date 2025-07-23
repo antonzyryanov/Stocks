@@ -8,9 +8,6 @@
 import UIKit
 import SnapKit
 
-import UIKit
-import SnapKit
-
 class LabelContainerView: UIView {
     let label = UILabel()
     var tapAction: ((String) -> Void)?
@@ -28,7 +25,7 @@ class LabelContainerView: UIView {
     }
 
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError("[LabelContainerView]: init(coder:) has not been implemented")
     }
 
     private func setupLabel(with text: String) {
@@ -173,8 +170,10 @@ class CloudsView: UIView {
     func configure(with model: CloudsModel) {
         var unevenTexts: [String] = []
         var evenTexts: [String] = []
+        
+        let items = model.promptsReversed ? model.prompts.items.reversed() : model.prompts.items
 
-        for (index, text) in model.prompts.items.enumerated() {
+        for (index, text) in items.enumerated() {
             if index % 2 == 0 {
                 evenTexts.append(text)
             } else {

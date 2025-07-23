@@ -34,7 +34,6 @@ class LocalStocksDataRepositoryImpl: NSObject, LocalStocksDataRepositoryProtocol
         
         let context = self.context
         
-        // Delete existing data
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "StockEntity")
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         do {
@@ -43,7 +42,6 @@ class LocalStocksDataRepositoryImpl: NSObject, LocalStocksDataRepositoryProtocol
             print("[LocalStocksDataRepositoryImpl]: Failed to delete existing data: \(error)")
         }
         
-        // Insert new stocks
         for stock in stocks {
             let stockEntity = NSEntityDescription.insertNewObject(forEntityName: "StockEntity", into: context)
             stockEntity.setValue(stock.symbol, forKey: "symbol")
@@ -52,7 +50,6 @@ class LocalStocksDataRepositoryImpl: NSObject, LocalStocksDataRepositoryProtocol
             stockEntity.setValue(stock.change, forKey: "change")
             stockEntity.setValue(stock.changePercent, forKey: "changePercent")
             stockEntity.setValue(stock.logo, forKey: "logo")
-            // Handle new properties
             stockEntity.setValue(stock.isFavourite ?? false, forKey: "isFavorite")
             stockEntity.setValue(stock.presentationPrice, forKey: "presentationPrice")
             stockEntity.setValue(stock.presentationPriceDynamic, forKey: "presentationPriceDynamic")
@@ -125,5 +122,69 @@ class LocalStocksDataRepositoryImpl: NSObject, LocalStocksDataRepositoryProtocol
             print("LocalStocksDataRepositoryImpl]: Failed to update favorite status: \(error)")
         }
     }
+    
+    func fetchHistoryPrompts(completion: @escaping (PromptsModel?) -> Void) {
+            let fetchRequest: NSFetchRequest<NSManagedObject> = NSFetchRequest(entityName: "HistoryPrompts")
+            do {
+                if let entity = try context.fetch(fetchRequest).first,
+                   let items = entity.value(forKey: "items") as? [String] {
+                    completion(PromptsModel(items: items))
+                } else {
+                    completion(nil)
+                }
+            } catch {
+                print("Failed to fetch HistoryPrompts: \(error)")
+                completion(nil)
+            }
+        }
+
+        func saveHistory(prompts: PromptsModel) {
+            let fetchRequest: NSFetchRequest<NSManagedObject> = NSFetchRequest(entityName: "HistoryPrompts")
+            do {
+                let existingEntities = try context.fetch(fetchRequest)
+                for entity in existingEntities {
+                    context.delete(entity)
+                }
+                if let entityDesc = NSEntityDescription.entity(forEntityName: "HistoryPrompts", in: context) {
+                    let newEntity = NSManagedObject(entity: entityDesc, insertInto: context)
+                    newEntity.setValue(prompts.items, forKey: "items")
+                    try context.save()
+                }
+            } catch {
+                print("Failed to save HistoryPrompts: \(error)")
+            }
+        }
+
+        func fetchPopularPrompts(completion: @escaping (PromptsModel?) -> Void) {
+            let fetchRequest: NSFetchRequest<NSManagedObject> = NSFetchRequest(entityName: "PopularPrompts")
+            do {
+                if let entity = try context.fetch(fetchRequest).first,
+                   let items = entity.value(forKey: "items") as? [String] {
+                    completion(PromptsModel(items: items))
+                } else {
+                    completion(nil)
+                }
+            } catch {
+                print("Failed to fetch PopularPrompts: \(error)")
+                completion(nil)
+            }
+        }
+
+        func savePopular(prompts: PromptsModel) {
+            let fetchRequest: NSFetchRequest<NSManagedObject> = NSFetchRequest(entityName: "PopularPrompts")
+            do {
+                let existingEntities = try context.fetch(fetchRequest)
+                for entity in existingEntities {
+                    context.delete(entity)
+                }
+                if let entityDesc = NSEntityDescription.entity(forEntityName: "PopularPrompts", in: context) {
+                    let newEntity = NSManagedObject(entity: entityDesc, insertInto: context)
+                    newEntity.setValue(prompts.items, forKey: "items")
+                    try context.save()
+                }
+            } catch {
+                print("Failed to save PopularPrompts: \(error)")
+            }
+        }
     
 }

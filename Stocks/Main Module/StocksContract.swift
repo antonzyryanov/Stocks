@@ -10,7 +10,7 @@ import Foundation
 
 
 protocol PresenterToViewStocksProtocol {
-    func handleUpdateOf(stocks: [StocksModel])
+    func handleUpdateOf(presentationModel: StocksModulePresentationModel)
 }
 
 
@@ -18,6 +18,7 @@ protocol ViewToPresenterStocksProtocol {
     
     func handleViewsRequestUpdate()
     func handleUpdateOfStock(presentationModel: StocksModel)
+    func handleUpdateOfHistory(prompts: PromptsModel)
     
     var view: PresenterToViewStocksProtocol? { get set }
     var interactor: PresenterToInteractorStocksProtocol? { get set }
@@ -29,6 +30,7 @@ protocol PresenterToInteractorStocksProtocol {
     
     func handlePresentersRequestUpdate()
     func handleUpdateOfStock(presentationModel: StocksModel)
+    func handleUpdateOfHistory(prompts: PromptsModel)
     
     var presenter: InteractorToPresenterStocksProtocol? { get set }
 }
@@ -36,7 +38,7 @@ protocol PresenterToInteractorStocksProtocol {
 
 // MARK: Interactor Output (Interactor -> Presenter)
 protocol InteractorToPresenterStocksProtocol {
-    func handleUpdateOf(stocks: [StocksModel])
+    func handleUpdateOf(presentationModel: StocksModulePresentationModel)
 }
 
 

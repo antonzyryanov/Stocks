@@ -61,6 +61,9 @@
 		FC2433AE2E2E16D30078CD01 /* CloudsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2433AD2E2E16D30078CD01 /* CloudsView.swift */; };
 		FC2433B02E2E1F3C0078CD01 /* PromptsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2433AF2E2E1F3C0078CD01 /* PromptsModel.swift */; };
 		FC2433B22E2E223A0078CD01 /* CloudsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2433B12E2E223A0078CD01 /* CloudsModel.swift */; };
+		FC2433B92E2FC4E10078CD01 /* StocksModulePresentationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2433B82E2FC4E10078CD01 /* StocksModulePresentationModel.swift */; };
+		FC2433BB2E2FD0950078CD01 /* CustomTableHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2433BA2E2FD0950078CD01 /* CustomTableHeader.swift */; };
+		FC2433BD2E2FD1220078CD01 /* CustomTableHeaderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2433BC2E2FD1220078CD01 /* CustomTableHeaderModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -138,6 +141,9 @@
 		FC2433AD2E2E16D30078CD01 /* CloudsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudsView.swift; sourceTree = "<group>"; };
 		FC2433AF2E2E1F3C0078CD01 /* PromptsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptsModel.swift; sourceTree = "<group>"; };
 		FC2433B12E2E223A0078CD01 /* CloudsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudsModel.swift; sourceTree = "<group>"; };
+		FC2433B82E2FC4E10078CD01 /* StocksModulePresentationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StocksModulePresentationModel.swift; sourceTree = "<group>"; };
+		FC2433BA2E2FD0950078CD01 /* CustomTableHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableHeader.swift; sourceTree = "<group>"; };
+		FC2433BC2E2FD1220078CD01 /* CustomTableHeaderModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableHeaderModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -303,6 +309,7 @@
 				FC2433A02E2DD5FB0078CD01 /* StocksCell.swift */,
 				FC2433AB2E2DE3830078CD01 /* CollectionViewInsideScrollView.swift */,
 				FC2433AD2E2E16D30078CD01 /* CloudsView.swift */,
+				FC2433BA2E2FD0950078CD01 /* CustomTableHeader.swift */,
 			);
 			path = "Reusable UI Components";
 			sourceTree = "<group>";
@@ -317,6 +324,7 @@
 				FC2433A42E2DD93F0078CD01 /* CustomLabelModel.swift */,
 				FC2433AF2E2E1F3C0078CD01 /* PromptsModel.swift */,
 				FC2433B12E2E223A0078CD01 /* CloudsModel.swift */,
+				FC2433BC2E2FD1220078CD01 /* CustomTableHeaderModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -357,6 +365,7 @@
 				FC24338C2E2DBFF50078CD01 /* Protocols */,
 				FC2433882E2DBF700078CD01 /* StocksModel.swift */,
 				FC24338A2E2DBF910078CD01 /* StocksModelContainer.swift */,
+				FC2433B82E2FC4E10078CD01 /* StocksModulePresentationModel.swift */,
 			);
 			path = Entity;
 			sourceTree = "<group>";
@@ -559,7 +568,9 @@
 				FC2433992E2DC5040078CD01 /* LocalStocksDataRepositoryImpl.swift in Sources */,
 				FC2433332E2D89A30078CD01 /* Stocks.xcdatamodeld in Sources */,
 				FC2433932E2DC13C0078CD01 /* NetworkStocksDataRepositoryProtocol.swift in Sources */,
+				FC2433B92E2FC4E10078CD01 /* StocksModulePresentationModel.swift in Sources */,
 				FC24336C2E2D99FF0078CD01 /* CategoriesView.swift in Sources */,
+				FC2433BD2E2FD1220078CD01 /* CustomTableHeaderModel.swift in Sources */,
 				FC2433AA2E2DE21A0078CD01 /* UIImageView + Extensions.swift in Sources */,
 				FC2433472E2D89E70078CD01 /* StocksPresenter.swift in Sources */,
 				FC2433822E2DAAD90078CD01 /* UIColor + Extensions.swift in Sources */,
@@ -579,6 +590,7 @@
 				FC2433B22E2E223A0078CD01 /* CloudsModel.swift in Sources */,
 				FC24338B2E2DBF910078CD01 /* StocksModelContainer.swift in Sources */,
 				FC2433862E2DB34B0078CD01 /* String + Extensions.swift in Sources */,
+				FC2433BB2E2FD0950078CD01 /* CustomTableHeader.swift in Sources */,
 				FC2433A52E2DD93F0078CD01 /* CustomLabelModel.swift in Sources */,
 				FC2433562E2D8AB40078CD01 /* ModulesFactoryImpl.swift in Sources */,
 				FC2433572E2D8AB40078CD01 /* ModulesFactoryProtocol.swift in Sources */,
@@ -656,7 +668,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = XLY33384SZ;
+				DEVELOPMENT_TEAM = 87R5Z97XZ7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Stocks/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -664,12 +676,13 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.anton.zyryanov.stocks.Stocks;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mobness.Stocks;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -692,6 +705,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

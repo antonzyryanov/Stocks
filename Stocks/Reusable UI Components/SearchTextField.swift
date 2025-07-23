@@ -10,7 +10,9 @@ import SnapKit
 
 class SearchTextField: UIView {
     
-    var textField: TextFieldWithCustomCancelButton = {
+    var finishSearchAction: ((UITextField)->Void)?
+    
+    private var textField: TextFieldWithCustomCancelButton = {
         let tf = TextFieldWithCustomCancelButton()
         tf.heightAnchor.constraint(equalToConstant: 48).isActive = true
         tf.backgroundColor = .white
@@ -58,6 +60,35 @@ class SearchTextField: UIView {
             attributes: [NSAttributedString.Key.foregroundColor: model.textColor]
         )
         
+    }
+    
+    func setup(delegate: UITextFieldDelegate) {
+        self.textField.delegate = delegate
+    }
+    
+    func count() -> Int {
+        return textField.text?.count ?? 0
+    }
+    
+    func currentText() -> String {
+        return textField.text ?? ""
+    }
+    
+    func endEditing() {
+        textField.endEditing(true)
+    }
+    
+    func finishSearch() {
+        finishSearchAction?(self.textField)
+    }
+    
+    func isEditing() -> Bool {
+        return textField.isEditing
+    }
+    
+    func set(text: String) {
+        textField.text = text
+        finishSearchAction?(self.textField)
     }
     
 }

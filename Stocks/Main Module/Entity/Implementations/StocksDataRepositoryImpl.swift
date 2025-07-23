@@ -58,8 +58,49 @@ class StocksDataRepositoryImpl: StocksDataRepositoryProtocol {
         
     }
     
+    func fetchPrompts(completion: @escaping (PromptsModel,PromptsModel) -> Void) {
+        var popularPrompts: PromptsModel = PromptsModel(items: [])
+        var historyPrompts: PromptsModel = PromptsModel(items: [])
+
+        let group = DispatchGroup()
+        
+        group.enter()
+        DispatchQueue.global().async {
+            self.localStocksDataRepository.fetchPopularPrompts { fethcedPrompts in
+                if fethcedPrompts?.items.isEmpty ?? true {
+                    popularPrompts = .init(items: ["Apple", "First Solar", "Amazon", "Alibaba", "Google", "Facebook", "Tesla", "Microsoft", "Mastercard"])
+                    self.localStocksDataRepository.savePopular(prompts: popularPrompts)
+                } else {
+                    popularPrompts = fethcedPrompts ?? .init(items: [])
+                }
+                group.leave()
+            }
+        }
+        
+        group.enter()
+        DispatchQueue.global().async {
+            self.localStocksDataRepository.fetchHistoryPrompts { fethcedPrompts in
+                if fethcedPrompts?.items.isEmpty ?? false {
+                    historyPrompts = .init(items: [""])
+                } else {
+                    historyPrompts = fethcedPrompts ?? .init(items: [])
+                }
+                group.leave()
+            }
+        }
+        
+        group.notify(queue: .main) {
+            completion(popularPrompts,historyPrompts)
+        }
+        
+    }
+        
     func save(stocks: [StocksModel]) {
         localStocksDataRepository.save(stocks: stocks)
+    }
+    
+    func saveHistory(prompts: PromptsModel) {
+        localStocksDataRepository.saveHistory(prompts: prompts)
     }
     
     func updateFavouriteStatusOf(stock: StocksModel) {

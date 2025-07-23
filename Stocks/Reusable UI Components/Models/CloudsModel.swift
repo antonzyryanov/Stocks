@@ -11,4 +11,5 @@ struct CloudsModel {
     var prompts: PromptsModel
     var titleFont: UIFont
     var itemsFont: UIFont
+    var promptsReversed: Bool = false
 }
