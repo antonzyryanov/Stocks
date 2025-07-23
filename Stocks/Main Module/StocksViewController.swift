@@ -199,8 +199,9 @@ class StocksViewController: UIViewController {
     private func updateStocksCollectionView(isFilterOn: Bool = false) {
         if isFilterOn {
             currentlyPresentingStocksModels = presentationStocksModels.filter({ stock in
-                let subString = stock.name.prefix(searchTextField.count())
-                if searchTextField.currentText().contains(subString) {
+                let firstSubString = stock.name.prefix(searchTextField.count())
+                let secondSubString = stock.symbol.prefix(searchTextField.count())
+                if searchTextField.currentText().contains(firstSubString) || searchTextField.currentText().contains(secondSubString)  {
                     return true
                 } else {
                     return false
